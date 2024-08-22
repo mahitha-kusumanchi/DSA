@@ -24,6 +24,7 @@ class LinkedList:
     def printLinkedList(self):
         if self.head==None:
             print("Empty Linked List")
+            return
         temp=self.head
         llst=""
         while temp:
@@ -38,13 +39,15 @@ class LinkedList:
     def deleteAtEnd(self):
         if self.head==None:
             print("No element to delete")
+        elif self.head.next ==None:
+            self.head=None
         else:
             temp=self.head
             while (temp.next).next!= None:
                 temp=temp.next
             temp.next=None
     def deleteAtIndex(self,index):
-        if index>self.Size() and index<0:
+        if index>self.Size() or index<0:
             print("Invalid index")
         elif index==0:
             self.deleteAtBeginning()
@@ -83,6 +86,7 @@ class LinkedList:
 if __name__=="__main__":
     linkedList=LinkedList()
     linkedList.insertAtBeginning(10)
+    linkedList.deleteAtBeginning()
     linkedList.insertAtBeginning(20)
     linkedList.insertAtBeginning(30)
     linkedList.printLinkedList()
