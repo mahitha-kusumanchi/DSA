@@ -22,36 +22,39 @@ class BinaryTree:
                 q.append(temp.right)
             i+=1
         return root
-    def preorder(self,root):
+
+    def preorder(self, root):
         if not root:
             return
-        print(root.value,end=" ")
+        print(root.value, end=" ")
         self.preorder(root.left)
         self.preorder(root.right)
-        return
-    def postorder(self,root):
+    def postorder(self, root):
         if not root:
             return
         self.postorder(root.left)
         self.postorder(root.right)
         print(root.value, end=" ")
-    def inorder(self,root):
+    def inorder(self, root):
         if not root:
             return
         self.inorder(root.left)
         print(root.value, end=" ")
         self.inorder(root.right)
-    def depthFirst(self,root):
+    def depthFirst(self, root):
         if not root:
             return
-        stack=deque([root])
+        stack = deque([root])
         while stack:
-            temp=stack.pop()
-            print(temp.value,end=" ")
+            temp = stack.pop()
+            print(temp.value, end=" ")
             if temp.right:
                 stack.append(temp.right)
             if temp.left:
                 stack.append(temp.left)
+    def levelorder(self,root):
+        values=self.level_order_helper(root)
+        print(" ".join(map(str,values)))
     def size(self,root):
         if not root:
             return 0
@@ -64,12 +67,13 @@ class BinaryTree:
         if root.left is None and root.right is None:
             return 1
         return 1+max(self.height(root.left),self.height(root.right))
-    def countLeaves(self,root):
-        if not root :
+
+    def countLeaves(self, root):
+        if not root:
             return 0
         if root.left is None and root.right is None:
             return 1
-        return self.countLeaves(root.left)+self.countLeaves(root.right)
+        return self.countLeaves(root.left) + self.countLeaves(root.right)
     def level_order_helper(self, root):
         if not root:
             return []
@@ -83,27 +87,27 @@ class BinaryTree:
             if temp.right:
                 q.append(temp.right)
         return result
-    def print_level_order(self, root):
+    def level_order(self, root):
         values = self.level_order_helper(root)
-        print(" ".join(map(str, values)))
-    def clone(self, root):
+        print(" ".join(map(str,values)))
+    def clone(self,root):
         if not root:
             return None
-        new_root = TreeNode(root.value)
-        new_root.left = self.clone(root.left)
-        new_root.right = self.clone(root.right)
+        new_root=TreeNode(root.value)
+        new_root.left=self.clone(root.left)
+        new_root.right=self.clone(root.right)
         return new_root
+    def mirror(self,root):
+        if not root:
+            return
+        root.left,root.right=root.right,root.left
+        self.mirror(root.left)
+        self.mirror(root.right)
     def printMirror(self, root):
         cloned_root = self.clone(root)
         self.mirror(cloned_root)
         values = self.level_order_helper(cloned_root)
         print(" ".join(map(str, values)))
-    def mirror(self, root):
-        if not root:
-            return
-        root.left, root.right = root.right, root.left
-        self.mirror(root.left)
-        self.mirror(root.right)
     def isFullTree(self,root):
         if not root:
             return True
@@ -112,16 +116,19 @@ class BinaryTree:
         if root.left and root.right:
             return self.isFullTree(root.left) and self.isFullTree(root.right)
         return False
-
-    def findAncestors(self, root, target):
+    def CheckBalancedTree(self,root):
         if root is None:
-            return False
-        if root.value == target:
-            return True
-        if self.findAncestors(root.left, target) or self.findAncestors(root.right, target):
-            print(root.value, end=" ")
-            return True
-        return False
+            return 0
+        left=self.CheckBalancedTree(root.left)
+        right=self.CheckBalancedTree(root.right)
+        if left==-1 or right==-1:
+            return -1
+        if abs(left-right)>1:
+            return -1
+        return 1+max(left,right)
+    def isBalancedTree(self,root):
+        return self.CheckBalancedTree(root)!=-1
+
 if __name__=="__main__":
     bt=BinaryTree()
     _values=input().split()
@@ -133,7 +140,7 @@ if __name__=="__main__":
             values.append(None)
     root=bt.buildTree(values)
     print("Level Order traversal :",end=" ")
-    bt.print_level_order(root)
+    bt.level_order(root)
     print("preorder traversal :",end=" ")
     bt.preorder(root)
     print()
@@ -156,5 +163,5 @@ if __name__=="__main__":
     print(bt.isFullTree(root))
     print("Mirror Tree:", end=" ")
     print(bt.printMirror(root))
-    print("Ancestors :",end=" ")
-    print(bt.findAncestors(root,5))
+    print("is Balanced Tree: ",end=" ")
+    print(bt.isBalancedTree(root))
