@@ -1,4 +1,4 @@
-// go through visualgo for understanding this code
+# go through visualgo for understanding this code
 class Solution: 
     def select(self, arr, i):
         minIndex=i
@@ -15,7 +15,7 @@ solution=Solution()
 A=[3,7,2,9,0]
 print(solution.selectionSort(A))
 
-//or 
+#or 
 
 def Selection_Sort(Array):
     for i in range(len(Array)):
