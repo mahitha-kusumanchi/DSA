@@ -16,7 +16,7 @@ def preOrderTraversal(node):
     return li
 
 
-//or
+#or
 
 class TreeNode:
     def __init__(self,data):
