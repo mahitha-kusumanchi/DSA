@@ -29,7 +29,7 @@ def Merge(Array,low,mid,high):
 A=[3,8,1,9,2,7,4]
 print(MergeSort(A,0,len(A)-1))
 
-//Using classes and Objects
+#Using classes and Objects
 
 class Solution:
     def MergeSort(self,Array,low,high):
@@ -62,4 +62,30 @@ class Solution:
             k+=1
 A=[3,8,1,9,2,7,4]
 print(Solution().MergeSort(A,0,len(A)-1))
-    
+
+#another approach
+
+def mergeSort(Arr):
+    if len(Arr)<=1:
+        return Arr
+    mid=(len(Arr))//2
+    left=mergeSort(Arr[:mid])
+    right=mergeSort(Arr[mid:])
+    return merge(left,right)
+def merge(leftArray,rightArray):
+    i=j=0
+    Array=[]
+    while i<len(leftArray) and j<len(rightArray):
+        if leftArray[i]<rightArray[j]:
+           Array.append(leftArray[i])
+           i+=1
+        else:
+            Array.append(rightArray[j])
+            j+=1
+    Array.extend(leftArray[i:])
+    Array.extend(rightArray[j:])
+    return Array
+arr=[4,1,9,0]
+print(mergeSort(arr))
+
+
