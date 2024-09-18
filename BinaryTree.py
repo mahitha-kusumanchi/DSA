@@ -54,6 +54,23 @@ class BinaryTree:
     def levelorder(self,root):
         values=self.level_order_helper(root)
         print(" ".join(map(str,values)))
+    def levelOrderSpiral(self,root):
+        if root is None:
+            return []
+        queue=[root]
+        result=[]
+        while queue:
+            tempArraySize=len(queue)
+            tempArray=[]
+            for i in range(tempArraySize):
+                node=queue.pop(0)
+                tempArray.append(node.value)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            result.append(tempArray)
+        return result
     def size(self,root):
         if not root:
             return 0
@@ -116,6 +133,17 @@ class BinaryTree:
             print(root.value, end=" ")
             return True
         return False
+    def findDiameter_(self,root,maxi):
+        if root is None:
+            return 0
+        lh=self.findDiameter_(root.left,maxi)
+        rh=self.findDiameter_(root.right,maxi)
+        maxi[0]=max(maxi[0],lh+rh)
+        return 1+max(lh,rh)
+    def findDiameter(self,root):
+        maxi=[0]
+        self.findDiameter_(root, maxi)
+        return maxi[0]
     def isFullTree(self,root):
         if not root:
             return True
@@ -148,6 +176,8 @@ if __name__=="__main__":
     root=bt.buildTree(values)
     print("Level Order traversal :",end=" ")
     bt.level_order(root)
+    print("Level Order spiral traversal :",end=" ")
+    print(bt.levelOrderSpiral(root))
     print("preorder traversal :",end=" ")
     bt.preorder(root)
     print()
@@ -170,7 +200,10 @@ if __name__=="__main__":
     print(bt.printMirror(root))
     print("Ancestors :", end=" ")
     print(bt.findAncestors(root, 5))
+    print("Diameter : ",end=" ")
+    print(bt.findDiameter(root))
     print("is full tree :", end=" ")
     print(bt.isFullTree(root))
     print("is Balanced Tree: ",end=" ")
     print(bt.isBalancedTree(root))
+    
