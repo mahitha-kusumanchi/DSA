@@ -71,6 +71,76 @@ class BinaryTree:
                     queue.append(node.right)
             result.append(tempArray)
         return result
+    def zigZagTraversal(self,root):
+        if root is None:
+            return []
+        queue=deque([root])
+        result=[]
+        leftToright=True
+        while queue:
+            tempArrSize=len(queue)
+            tempArr=deque()
+            for i in range(tempArrSize):
+                if leftToright:
+                    node = queue.popleft()
+                    tempArr.append(node.value)
+                else:
+                    node = queue.popleft()
+                    tempArr.appendleft(node.value)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            leftToright=not leftToright
+            result.append(tempArr)
+        return result
+    def isLeaf(self,root):
+        return root.left is None and root.right is None
+    def boundaryTraversal(self,root):
+        if root is None:
+            return []
+        a=self.leftMostTraversal(root)
+        b=self.leaves(root)
+        c=self.rightmost(root)
+        return a+b+c
+    def leftMostTraversal(self,root):
+        if root is None:
+            return []
+        l=[]
+        while root:
+            if self.isLeaf(root):
+                break
+            l.append(root.value)
+            if root.left:
+                root=root.left
+            else:
+                root=root.right
+        return l
+    def leaves(self,root):
+        leaves = []
+        def collectLeaves(node):
+            if node is None:
+                return
+            if self.isLeaf(node):
+                leaves.append(node.value)
+            collectLeaves(node.left)
+            collectLeaves(node.right)
+        collectLeaves(root)
+        return leaves
+    def rightmost(self,root):
+        if root is None:
+            return []
+        l=[]
+        while root:
+            if self.isLeaf(root):
+                break
+            l.append(root.value)
+            if root.right:
+                root=root.right
+            else:
+                root=root.left
+        li=l[1:]
+        return li[::-1]
     def size(self,root):
         if not root:
             return 0
@@ -106,6 +176,7 @@ class BinaryTree:
     def level_order(self, root):
         values = self.level_order_helper(root)
         print(" ".join(map(str,values)))
+
     def clone(self,root):
         if not root:
             return None
@@ -133,6 +204,17 @@ class BinaryTree:
             print(root.value, end=" ")
             return True
         return False
+    def findParent(self,root,node):
+        if root is None or node is None or root.value==node.value:
+            return None
+        if root.left and root.left.value==node.value :
+            return root.value
+        if  root.right and root.right.value==node.value:
+            return root.value
+        if root.left:
+            return self.findParent(root.left,node)
+        if root.right:
+            return self.findParent(root.right, node)
     def findDiameter_(self,root,maxi):
         if root is None:
             return 0
@@ -164,6 +246,18 @@ class BinaryTree:
         return 1+max(left,right)
     def isBalancedTree(self,root):
         return self.CheckBalancedTree(root)!=-1
+    def isDegenerateTree(self,root):
+        if root is None:
+            return True
+        while root:
+            if root.left and root.right:
+                return False
+            if root.left:
+                root=root.left
+            else:
+                root=root.right
+        return True
+
 if __name__=="__main__":
     bt=BinaryTree()
     _values=input().split()
@@ -190,6 +284,16 @@ if __name__=="__main__":
     print("depth first traversal :",end=" ")
     bt.depthFirst(root)
     print()
+    print("zig zag traversal ",end=" ")
+    print(bt.zigZagTraversal(root))
+    print("leaves: ", end=" ")
+    print(bt.leaves(root))
+    print("left most :", end=" ")
+    print(bt.leftMostTraversal(root))
+    print("right most", end=" ")
+    print(bt.rightmost(root))
+    print("boundary traversal ", end=" ")
+    print(bt.boundaryTraversal(root))
     print("size :",end=" ")
     print(bt.size(root))
     print("height ",end=" ")
@@ -206,4 +310,8 @@ if __name__=="__main__":
     print(bt.isFullTree(root))
     print("is Balanced Tree: ",end=" ")
     print(bt.isBalancedTree(root))
-    
+    print("is degenerate tree",end=" ")
+    print(bt.isDegenerateTree(root))
+    print("parent ",end=" ")
+    print(bt.findParent(root,TreeNode(5)))
+
