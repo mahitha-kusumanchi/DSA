@@ -215,6 +215,64 @@ class BinaryTree:
             return self.findParent(root.left,node)
         if root.right:
             return self.findParent(root.right, node)
+    def findChildren(self,root,node):
+        if root is None or node is None:
+            return None
+        if  root.value==node.value:
+            li=[]
+            if root.left:
+                li.append(root.left.value)
+            if root.right:
+                li.append(root.right.value)
+            return li
+        left_result=self.findChildren(root.left,node)
+        if left_result is not None:
+            return left_result
+        right_result=self.findChildren(root.right, node)
+        if right_result is not None:
+            return right_result
+    def findSibling(self,root,node):
+        if root is None or node is None or root.value == node.value:
+            return None
+        if root.left and root.left.value == node.value:
+            if root.right:
+                return root.right.value
+        if root.right and root.right.value == node.value:
+            if root.left:
+                return root.left.value
+        left_result = self.findSibling(root.left, node)
+        if left_result is not None:
+            return left_result
+        right_result = self.findSibling(root.right, node)
+        if right_result is not None:
+            return right_result
+    def findNode(self,root,node):
+        if root is None or node is None:
+            return None
+        if root.value==node.value:
+            return root
+        left_result = self.findNode(root.left,node)
+        if left_result is not None:
+            return left_result
+        right_result = self.findNode(root.right,node)
+        if right_result is not None:
+            return right_result
+    def depthOfNode(self,root,node):
+        Node=self.findNode(root,node)
+        return self.height(Node)
+    def descendents(self,root,node):
+        Node=self.findNode(root,node)
+        if Node is None:
+            print("Node not found in the tree.")
+            return
+        queue=deque([Node])
+        while queue:
+            temp=queue.popleft()
+            print(temp.value,end=" ")
+            if temp.left:
+                queue.append(temp.left)
+            if temp.right:
+                queue.append(temp.right)
     def findDiameter_(self,root,maxi):
         if root is None:
             return 0
@@ -314,4 +372,11 @@ if __name__=="__main__":
     print(bt.isDegenerateTree(root))
     print("parent ",end=" ")
     print(bt.findParent(root,TreeNode(5)))
-
+    print("children ",end=" ")
+    print(bt.findChildren(root,TreeNode(3)))
+    print("siblings :",end=" ")
+    print(bt.findSibling(root,TreeNode(4)))
+    print("descendents :",end=" ")
+    bt.descendents(root,TreeNode(3))
+    print("\ndepth :",end=" ")
+    print(bt.depthOfNode(root,TreeNode(4)))
