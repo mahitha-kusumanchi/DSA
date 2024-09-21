@@ -139,8 +139,9 @@ class BinaryTree:
                 root=root.right
             else:
                 root=root.left
-        li=l[1:]
-        return li[::-1]
+        if len(l) > 1:
+            return l[1:][::-1]
+        return []
     def size(self,root):
         if not root:
             return 0
@@ -204,6 +205,35 @@ class BinaryTree:
             print(root.value, end=" ")
             return True
         return False
+    def findPath(self,root,target,path):
+        if root is None:   # Base case: If root is None, there's no path
+            return False
+        path.append(root.value)   # Add current node to the path
+        if root.value == target.value:  # Check if the current node is the target node
+            return True
+        if (self.findPath(root.left, target, path) or self.findPath(root.right, target, path)):  # Check if the target node is in the left or right subtree
+            return True
+        path.pop()  # If the target node is not in either subtree, remove the current node from path
+        return False
+    def getPath(self,root, target):
+        path = []
+        if self.findPath(root, target, path):
+            return path
+        else:
+            return None
+    def findLCA(self,root,node1,node2):
+        if root is None:
+            return None
+        if root.value==node1.value or root.value==node2.value :
+            return root
+        leftLCA=self.findLCA(root.left,node1,node2)
+        rightLCA=self.findLCA(root.right,node1,node2)
+        if leftLCA and rightLCA:
+            return root
+        if leftLCA:
+            return leftLCA
+        else:
+            return rightLCA
     def findParent(self,root,node):
         if root is None or node is None or root.value==node.value:
             return None
@@ -211,10 +241,11 @@ class BinaryTree:
             return root.value
         if  root.right and root.right.value==node.value:
             return root.value
-        if root.left:
-            return self.findParent(root.left,node)
-        if root.right:
-            return self.findParent(root.right, node)
+        left_result = self.findParent(root.left, node)
+        if left_result is not None:
+            return left_result
+        right_result = self.findParent(root.right, node)
+        return right_result
     def findChildren(self,root,node):
         if root is None or node is None:
             return None
@@ -228,9 +259,8 @@ class BinaryTree:
         left_result=self.findChildren(root.left,node)
         if left_result is not None:
             return left_result
-        right_result=self.findChildren(root.right, node)
-        if right_result is not None:
-            return right_result
+        right_result = self.findChildren(root.right, node)
+        return right_result
     def findSibling(self,root,node):
         if root is None or node is None or root.value == node.value:
             return None
@@ -244,8 +274,27 @@ class BinaryTree:
         if left_result is not None:
             return left_result
         right_result = self.findSibling(root.right, node)
-        if right_result is not None:
-            return right_result
+        return right_result
+    def findCousins(self,root,node):
+        if root is None or node is None or root.value == node.value:
+            return None
+        queue=deque([root])
+        marker=True
+        while queue and marker:
+            n=len(queue)
+            for i in range(n):
+                Node=queue.popleft()
+                if (Node.left and Node.left.value==node.value) or (Node.right and Node.right.value==node.value) :
+                    marker=False
+                else:
+                    if Node.left:
+                        queue.append(Node.left)
+                    if Node.right:
+                        queue.append(Node.right)
+        cousins=[]
+        for i in queue:
+            cousins.append(i.value)
+        return cousins
     def findNode(self,root,node):
         if root is None or node is None:
             return None
@@ -315,7 +364,41 @@ class BinaryTree:
             else:
                 root=root.right
         return True
-
+    def isPerfect(self,root):
+        def findDepth(node): # Calculate the depth of the leftmost leaf
+            depth=0
+            while node is not None:
+                depth+=1
+                node=node.left
+            return depth
+        def checkPerfect(node,depth,level=0):
+            if node is None:
+                return True
+            if node.left is None and node.right is None: # Check if leaf node is at the correct depth
+                return depth==level+1
+            if node.left is None or node.right is None: # Check if internal node has both children
+                return False
+            return checkPerfect(node.left,depth,level+1) and checkPerfect(node.right,depth,level+1)
+        depth=findDepth(root)
+        return checkPerfect(root,depth)
+    def isComplete(self,root):
+        if not root:
+            return True
+        queue=deque([root])
+        end=False  # This flag indicates if we have seen a non-complete node
+        while queue:
+            current=queue.popleft()
+            if current.left:
+                if end:  # If we have seen a non-complete node, and now we see a child, it's not complete
+                    return False
+                queue.append(current.left)
+            if current.right:
+                if end: # If there was no left child before, it means the tree is not complete
+                    return False
+                queue.append(current.right)
+            else:
+                end=True  # We have seen a non-complete node (no right child)
+        return True
 if __name__=="__main__":
     bt=BinaryTree()
     _values=input().split()
@@ -362,6 +445,22 @@ if __name__=="__main__":
     print(bt.printMirror(root))
     print("Ancestors :", end=" ")
     print(bt.findAncestors(root, 5))
+    print("path :",end=" ")
+    print(bt.getPath(root,TreeNode(2)))
+    print("parent ", end=" ")
+    print(bt.findParent(root, TreeNode(5)))
+    print("children ", end=" ")
+    print(bt.findChildren(root, TreeNode(2)))
+    print("siblings :", end=" ")
+    print(bt.findSibling(root, TreeNode(2)))
+    print("descendents :", end=" ")
+    bt.descendents(root, TreeNode(3))
+    print("\ndepth :", end=" ")
+    print(bt.depthOfNode(root, TreeNode(4)))
+    print("cousins :", end=" ")
+    print(bt.findCousins(root, TreeNode(5)))
+    print("LCA :", end=" ")
+    print(bt.findLCA(root, TreeNode(2), TreeNode(3)).value)
     print("Diameter : ",end=" ")
     print(bt.findDiameter(root))
     print("is full tree :", end=" ")
@@ -370,13 +469,7 @@ if __name__=="__main__":
     print(bt.isBalancedTree(root))
     print("is degenerate tree",end=" ")
     print(bt.isDegenerateTree(root))
-    print("parent ",end=" ")
-    print(bt.findParent(root,TreeNode(5)))
-    print("children ",end=" ")
-    print(bt.findChildren(root,TreeNode(3)))
-    print("siblings :",end=" ")
-    print(bt.findSibling(root,TreeNode(4)))
-    print("descendents :",end=" ")
-    bt.descendents(root,TreeNode(3))
-    print("\ndepth :",end=" ")
-    print(bt.depthOfNode(root,TreeNode(4)))
+    print("is perfect :",end=" ")
+    print(bt.isPerfect(root))
+    print("is complete :",end=" ")
+    print(bt.isComplete(root))
