@@ -1,4 +1,5 @@
 #minHeap
+#My reference and understanding of heap implementation is from Ayushi Sharma's YouTube channel.
 class PriorityQueue:
     def __init__(self) -> None:
         self.pq=[]
@@ -118,3 +119,68 @@ if __name__=="__main__":
     pq.getHeap()
     print(pq.getMax())   
             
+#maxheap
+
+class PriorityQueue:
+    def __init__(self) -> None:
+        self.pq = []
+    def getSize(self):
+        return len(self.pq)
+    def isEmpty(self):
+        return not self.pq
+    def getMax(self):
+        if self.isEmpty():
+            return None
+        return self.pq[0]
+    def buildMaxHeap(self, values):
+        for i in values:
+            self.insert(i)        
+    def getHeap(self):
+        print(self.pq)
+    def upheap(self,childIndex):
+        while childIndex>0:
+            parentIndex=(childIndex-1)//2
+            if self.pq[parentIndex]<self.pq[childIndex]:
+                self.pq[parentIndex], self.pq[childIndex] = self.pq[childIndex], self.pq[parentIndex]
+                childIndex = parentIndex
+            else:
+                break
+    def insert(self,value):
+        self.pq.append(value)
+        childIndex=self.getSize()-1
+        self.upheap(childIndex)
+    def downheap(self,parentIndex):
+        size=self.getSize()
+        while True:
+            leftChildIndex=2*parentIndex+1
+            rightChildIndex=2*parentIndex+2
+            maxIndex = parentIndex
+            if leftChildIndex < size and self.pq[maxIndex] < self.pq[leftChildIndex]:
+                maxIndex = leftChildIndex
+            if rightChildIndex < size and self.pq[maxIndex] < self.pq[rightChildIndex]:
+                maxIndex = rightChildIndex
+            if maxIndex == parentIndex:
+                break
+            self.pq[parentIndex], self.pq[maxIndex] = self.pq[maxIndex], self.pq[parentIndex]
+            parentIndex = maxIndex
+    def removeMax(self):
+        if self.isEmpty():
+            return None
+        maxValue = self.pq[0]
+        self.pq[0] = self.pq.pop()
+        self.downheap(0)
+        return maxValue
+    def getHeap(self):
+        print(self.pq)
+if __name__ == "__main__":
+    pq=PriorityQueue()
+    print(pq.isEmpty())
+    print(pq.getMax())
+    print(pq.getSize())
+    values=[4,52,58,44,89,5]
+    pq.buildMaxHeap(values)
+    pq.getHeap()
+    print(pq.removeMax())
+    pq.getHeap()
+    print(pq.getMax()) 
+
