@@ -341,7 +341,7 @@ class BinaryTree:
         if root.left and root.right:
             return self.isFullTree(root.left) and self.isFullTree(root.right)
         return False
-    def CheckBalancedTree(self,root):
+    def CheckBalancedTree(self,root):        #returns height of the tree if the tree is balance,else returns -1
         if root is None:
             return 0
         left=self.CheckBalancedTree(root.left)
