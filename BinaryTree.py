@@ -92,7 +92,7 @@ class BinaryTree:
                 if node.right:
                     queue.append(node.right)
             leftToright=not leftToright
-            result.append(tempArr)
+            result.extend(tempArr)
         return result
     def isLeaf(self,root):
         return root.left is None and root.right is None
