@@ -341,18 +341,14 @@ class BinaryTree:
         if root.left and root.right:
             return self.isFullTree(root.left) and self.isFullTree(root.right)
         return False
-    def CheckBalancedTree(self,root):        #returns height of the tree if the tree is balance,else returns -1
-        if root is None:
-            return 0
-        left=self.CheckBalancedTree(root.left)
-        right=self.CheckBalancedTree(root.right)
-        if left==-1 or right==-1:
-            return -1
+    def isBalanced(self,root):
+        if not root:
+            return True
+        left=self.height(root.left)
+        right=self.height(root.right)
         if abs(left-right)>1:
-            return -1
-        return 1+max(left,right)
-    def isBalancedTree(self,root):
-        return self.CheckBalancedTree(root)!=-1
+            return False
+        return self.isBalanced(root.left) and self.isBalanced(root.right)
     def isDegenerateTree(self,root):
         if root is None:
             return True
@@ -463,10 +459,11 @@ if __name__=="__main__":
     print("is full tree :", end=" ")
     print(bt.isFullTree(root))
     print("is Balanced Tree: ",end=" ")
-    print(bt.isBalancedTree(root))
+    print(bt.isBalanced(root))
     print("is degenerate tree",end=" ")
     print(bt.isDegenerateTree(root))
     print("is perfect :",end=" ")
     print(bt.isPerfect(root))
     print("is complete :",end=" ")
     print(bt.isComplete(root))
+
