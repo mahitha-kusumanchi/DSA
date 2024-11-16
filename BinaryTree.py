@@ -384,20 +384,17 @@ class BinaryTree:
     def isComplete(self,root):
         if not root:
             return True
-        queue=deque([root])
-        end=False  # This flag indicates if we have seen a non-complete node
-        while queue:
-            current=queue.popleft()
-            if current.left:
-                if end:  # If we have seen a non-complete node, and now we see a child, it's not complete
-                    return False
-                queue.append(current.left)
-            if current.right:
-                if end: # If there was no left child before, it means the tree is not complete
-                    return False
-                queue.append(current.right)
+        q=deque([root])
+        while q:
+            curr=q.popleft()
+            if curr:
+                q.append(curr.left)
+                q.append(curr.right)
             else:
-                end=True  # We have seen a non-complete node (no right child)
+                while q:
+                    curr1=q.popleft()
+                    if curr1:
+                        return False
         return True
 if __name__=="__main__":
     bt=BinaryTree()
